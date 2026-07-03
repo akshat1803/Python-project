@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from xgboost import XGBRegressor
 
 X_train = pd.read_csv("data/X_train.csv")
 X_test = pd.read_csv("data/X_test.csv")
@@ -50,6 +52,30 @@ for feature, importance in sorted(
 ):
     print(f"  {feature}: {importance:.4f}")
 
+# Decision Tree
+dt = DecisionTreeRegressor(max_depth=5, random_state=42)
+dt.fit(X_train, y_train)
+y_pred_dt = dt.predict(X_test)
+results.append(evaluate("Decision Tree", y_test, y_pred_dt))
+
+print("\nDecision Tree feature importances:")
+for feature, importance in sorted(
+    zip(FEATURES, dt.feature_importances_), key=lambda x: -x[1]
+):
+    print(f"  {feature}: {importance:.4f}")
+
+# XGBoost
+xgb = XGBRegressor(n_estimators=200, random_state=42)
+xgb.fit(X_train, y_train)
+y_pred_xgb = xgb.predict(X_test)
+results.append(evaluate("XGBoost", y_test, y_pred_xgb))
+
+print("\nXGBoost feature importances:")
+for feature, importance in sorted(
+    zip(FEATURES, xgb.feature_importances_), key=lambda x: -x[1]
+):
+    print(f"  {feature}: {importance:.4f}")
+
 # Comparison table
 results_df = pd.DataFrame(results)
 print("\n=== Model Comparison ===")
@@ -58,7 +84,12 @@ print(results_df.to_string(index=False))
 # Save the best model (by R2)
 best_row = results_df.loc[results_df["R2"].idxmax()]
 best_name = best_row["Model"]
-best_model = {"Linear Regression": lin_reg, "Random Forest": rf}.get(best_name, lin_reg)
+best_model = {
+    "Linear Regression": lin_reg,
+    "Random Forest": rf,
+    "Decision Tree": dt,
+    "XGBoost": xgb,
+}.get(best_name, lin_reg)
 
 joblib.dump(best_model, "model.pkl")
 joblib.dump(FEATURES, "features.pkl")

@@ -1,6 +1,9 @@
+from pathlib import Path
 import pandas as pd
 
-df = pd.read_csv("../data/StudentPerformanceFactors.csv")
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+df = pd.read_csv(DATA_DIR / "StudentPerformanceFactors.csv")
 
 print("Shape:", df.shape)
 print("\nDtypes:\n", df.dtypes)

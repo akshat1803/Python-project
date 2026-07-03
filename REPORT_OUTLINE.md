@@ -17,14 +17,16 @@
 4. **Models**
    - Baseline: mean predictor.
    - Linear Regression: coefficients and interpretation.
+   - Decision Tree: feature importances.
    - Random Forest: feature importances.
-   - Why Linear Regression won here (near-linear relationships, small feature set).
+   - XGBoost: feature importances.
+   - Why Linear Regression won here (near-linear relationships, small feature set, tree-based models overfit/underfit on so few features).
 
 5. **Results table**
-   - MAE / RMSE / R² for all three models (see README).
+   - MAE / RMSE / R² for all five models (see README).
 
 6. **Feature importance**
-   - Consistent ranking across both models: Attendance > Hours_Studied > Previous_Scores > Sleep_Hours.
+   - Consistent ranking across all tree-based models: Attendance > Hours_Studied > Previous_Scores > Sleep_Hours.
 
 7. **Limitations**
    - Single 80/20 split, no cross-validation.
@@ -32,4 +34,4 @@
    - Dataset may not generalize beyond its source population.
 
 8. **Future work**
-   - Cross-validation, hyperparameter tuning, gradient boosting, richer feature set.
+   - Cross-validation, hyperparameter tuning, richer feature set.
